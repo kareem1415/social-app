@@ -1,6 +1,6 @@
 let connected = false
 
-let socket = io("http://localhost:3003")
+let socket = io("https://khamsa-bako.herokuapp.com/")
 
 socket.emit("setup", userLoggedIn)
 
