@@ -1,0 +1,27 @@
+{
+  "name": "pelo-social-app",
+  "version": "1.0.0",
+  "description": "pelo social app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "Kareem Mohamed",
+  "license": "ISC",
+  "engines" : { 
+    "node" : "16.17.1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "mongoose": "^6.6.3",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^2.0.20",
+    "pug": "^3.0.2",
+    "socket.io": "^4.5.3"
+  }
+}
