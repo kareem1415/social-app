@@ -1,6 +1,13 @@
 let connected = false
 
-let socket = io("https://khamsa-bako.herokuapp.com/")
+let HOST = "ws://khamsa-bako.herokuapp.com:3000";
+let ws = new WebSocket(HOST);
+let el = document.getElementById('server-time');
+ws.onmessage = function (event) {
+  el.innerHTML = 'Server time: ' + event.data;
+};
+
+// let socket = io("https://khamsa-bako.herokuapp.com/")
 
 socket.emit("setup", userLoggedIn)
 
