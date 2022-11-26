@@ -1,9 +1,9 @@
 
 let connected = false
 
- // let socket = io("https://khamsa-bako.herokuapp.com/") production link
+let socket = io("https://khamsa-bako.herokuapp.com/") // production link
 
-let socket = io("http://localhost:3000") // devlink
+// let socket = io("http://localhost:3000") // devlink
 
 socket.emit("setup", userLoggedIn)
 
