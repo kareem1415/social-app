@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Message = require("../../schemas/MessageSchame");
 const Chat = require("../../schemas/ChatSchema");
-const User = require("../../schemas/UserSchema")
+const User = require("../../schemas/UserSchema");
+const Notification = require("../../schemas/NotificationSchema");
 
 
 
@@ -10,7 +11,7 @@ const User = require("../../schemas/UserSchema")
 router.post("/", async (req, res, next) => {
     if(!req.body.content || !req.body.chatId) {
         console.log("Invalid data passed into request");
-        return res.sendStatus(400)
+        return res.sendStatus(400);
     }
 
     let newMessage = {
@@ -21,19 +22,30 @@ router.post("/", async (req, res, next) => {
 
     Message.create(newMessage)
     .then(async message => {
-        message = await message.populate("sender");
-        message = await message.populate("chat");
-        message = await User.populate(message, { path: "chat.users" })
+        message = await message.populate("sender")
+        message = await message.populate("chat")
+        message = await User.populate(message, { path: "chat.users" });
 
-        Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message })
-        .catch(error => console.log(error))
+        let chat = await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message })
+        .catch(error => console.log(error));
+
+        insertNotifications(chat, message);
+
         res.status(201).send(message);
     })
     .catch(error => {
         console.log(error);
-        res.sendStatus(400)
+        res.sendStatus(400);
     })
 })
+
+function insertNotifications(chat, message) {
+    chat.users.forEach(userId => {
+        if(userId == message.sender._id.toString()) return;
+
+        Notification.insertNotification(userId, message.sender._id, "newMessage", message.chat._id);
+    })
+}
 
 
 module.exports = router;

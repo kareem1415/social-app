@@ -6,6 +6,14 @@ const path = require('path')
 const bodyParser = require('body-parser');
 const database = require('./database')
 const session = require('express-session')
+const AdminJS = require('adminjs');
+const AdminJSExpress = require('@adminjs/express')
+const AdminJSMongoose = require('@adminjs/mongoose')
+const UserSchema = require('./schemas/UserSchema')
+const PostSchema = require('./schemas/PostSchema')
+const NotificationSchema = require('./schemas/NotificationSchema')
+const MessageSchema = require('./schemas/MessageSchame')
+const ChatSchema = require('./schemas/ChatSchema')
 
 const server = app.listen(port, () => {
     console.log("Server listening on port " + port)
@@ -20,10 +28,33 @@ app.use(express.static(path.join(__dirname, "public")))
 app.use(session({
     secret: process.env.SECRET,
     resave: true,
-    saveUninitialized: false
+    saveUninitialized: true
 }))
 
+AdminJS.registerAdapter(AdminJSMongoose)
+const adminJs = new AdminJS({
+    resources: [
+        {
+            resource: UserSchema,
+        },
+        {
+            resource: PostSchema,
+        },
+        {
+            resource: NotificationSchema,
+        },
+        {
+            resource: MessageSchema,
+        },
+        {
+            resource: ChatSchema,
+        },
+    ], // We don’t have any resources connected yet.
+    rootPath: '/adminkareem', // Path to the AdminJS dashboard.
+});
 
+const router = AdminJSExpress.buildRouter(adminJs);
+app.use(adminJs.options.rootPath, router);
 
 // Routes
 const loginRoute = require('./routes/loginRoutes')
@@ -34,6 +65,7 @@ const profileRoute = require('./routes/profileRoutes')
 const uploadRoute = require('./routes/uploadRoutes')
 const searchRoute = require('./routes/searchRoutes')
 const messagesRoute = require('./routes/messagesRoutes')
+const notificationsRoute = require('./routes/notificationRoutes')
 
 
 // Api
@@ -41,6 +73,7 @@ const postsApiRoute = require('./routes/Api/posts')
 const usersApiRoute = require('./routes/Api/users')
 const chatsApiRoute = require('./routes/Api/chats')
 const messagesApiRoute = require('./routes/Api/messages')
+const notificationsApiRoute = require('./routes/Api/notifications')
 
 app.use("/login", loginRoute)
 app.use("/register", registerRoute)
@@ -52,12 +85,14 @@ app.use("/api/posts", postsApiRoute)
 app.use("/api/users", usersApiRoute)
 app.use("/api/chats", chatsApiRoute)
 app.use("/api/messages", messagesApiRoute)
+app.use("/api/notifications", notificationsApiRoute)
 
 app.use("/post/", middlware.requirLogin, postRoute)
 app.use("/profile", middlware.requirLogin, profileRoute)
 app.use("/uploads", uploadRoute)
 app.use("/search", middlware.requirLogin, searchRoute)
 app.use("/messages", middlware.requirLogin, messagesRoute)
+app.use("/notifications", middlware.requirLogin, notificationsRoute)
 
 app.get('/', middlware.requirLogin, (req, res, next) => {
     const payload = {
@@ -77,6 +112,7 @@ io.on("connection", (socket) => {
     socket.on("join room", room => socket.join(room))
     socket.on("typing", room => socket.in(room).emit("typing"))
     socket.on("stop typing", room => socket.in(room).emit("stop typing"))
+    socket.on("notification received", room => socket.in(room).emit("notification received"))
 
     socket.on("new message", newMessage => {
         let chat = newMessage.chat;
