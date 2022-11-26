@@ -266,9 +266,10 @@ $("#userSearchTextbox").keydown((event) =>{
 })
 
 $("#createChatButton").click(() => {
-    let data = JSON.stringify(selectedUsers);
+    var data = JSON.stringify(selectedUsers);
 
     $.post("/api/chats", { users: data }, chat => {
+
         if(!chat || !chat._id) return alert("Invalid response from server.");
 
         window.location.href = `/messages/${chat._id}`;
