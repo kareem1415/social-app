@@ -50,7 +50,8 @@ const adminJs = new AdminJS({
             resource: ChatSchema,
         },
     ], // We don’t have any resources connected yet.
-    rootPath: process.env.ADMINPATH, // Path to the AdminJS Dashboard.
+    rootPath: '/admin', // Path to the AdminJS dashboard.
+
 });
 
 const router = AdminJSExpress.buildRouter(adminJs);
