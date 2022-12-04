@@ -10,7 +10,7 @@
   "author": "Kareem Mohamed",
   "license": "ISC",
   "engines": {
-    "node": "16.17.1"
+    "node": "16.7.0"
   },
   "dependencies": {
     "@adminjs/express": "^5.0.1",
