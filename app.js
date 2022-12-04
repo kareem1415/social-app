@@ -50,7 +50,7 @@ const adminJs = new AdminJS({
             resource: ChatSchema,
         },
     ], // We don’t have any resources connected yet.
-    rootPath: '/admin', // Path to the AdminJS dashboard.
+    rootPath: '/omar@admin', // Path to the AdminJS dashboard.
 
 });
 
