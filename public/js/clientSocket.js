@@ -1,7 +1,7 @@
 
 let connected = false
 
-let socket = io("https://khamsa-bako.herokuapp.com/") //production link
+let socket = io("https://khamsa-bako-amgedomar12.koyeb.app/") //production link
 
 // let socket = io("http://localhost:3000") // devlink
 
